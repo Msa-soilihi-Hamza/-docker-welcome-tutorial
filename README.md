@@ -16,12 +16,12 @@ Ce projet documente l'utilisation et l'exploration de l'image Docker "welcome-to
 ### Vérification de l'installation Docker
 Avant de commencer, vérifions que Docker est bien installé et configuré :
 
-![Vérification Docker](./images/Capture%20d'écran%201.png)
+![Vérification Docker](./images/Capture_d'écran1.png)
 
 ### Configuration initiale
 Pour commencer, nous devons télécharger et exécuter l'image Docker :
 
-![Configuration initiale](./images/Capture%20d'écran%202.png)
+![Configuration initiale](./images/Capture_d'écran2.png)
 
 ## Exécution du conteneur
 
@@ -37,17 +37,17 @@ docker run -d -p 8088:80 --name welcome-to-docker docker/welcome-to-docker
 - `docker/welcome-to-docker` : Image utilisée
 
 Résultat de l'exécution :
-![Exécution du conteneur](./images/Capture%20d'écran%203.png)
+![Exécution du conteneur](./images/Capture_d’écran3.png)
 
 ## Exploration de l'interface
 
 Une fois le conteneur démarré, nous pouvons accéder à l'interface via notre navigateur sur `http://localhost:8088` :
 
 ### Page d'accueil
-![Interface d'accueil](./images/Capture%20d'écran%204.png)
+![Interface d'accueil](./images/Capture_d'écran4.png)
 
 ### Navigation et fonctionnalités
-![Exploration des fonctionnalités](./images/Capture%20d'écran%205.png)
+![Exploration des fonctionnalités](./images/Capture_d'écran5.png)
 
 ## Commandes Docker de Base
 
@@ -67,16 +67,26 @@ docker info
 ```bash
 # Lister les conteneurs en cours d'exécution
 docker ps
+```
+![Liste des conteneurs](./images/Capture_d’écran9.png)
 
+```bash
 # Lister toutes les images Docker
 docker images
+```
+![Liste des images](./images/Capture_d’écran9.png)
 
+```bash
 # Arrêter un conteneur
 docker stop [CONTAINER_ID/NAME]
+```
+![Arrêt du conteneur](./images/Capture_d’écran6.png)
 
+```bash
 # Télécharger une image
 docker pull [IMAGE_NAME]
 ```
+![Arrêt du conteneur](./images/Capture_d’écran16.png)
 
 ### Construction et exécution du conteneur
 
@@ -94,6 +104,8 @@ docker run -it --rm -p 8088:80 docker/welcome-to-docker
 ```bash
 # Supprimer un conteneur spécifique
 docker rm [CONTAINER_ID/NAME]
+```
+![Arrêt du conteneur](./images/Capture_d’écran16.png)
 
 # Supprimer plusieurs conteneurs
 docker rm [CONTAINER1_ID] [CONTAINER2_ID]
@@ -105,11 +117,13 @@ docker container prune
 docker rm -f [CONTAINER_ID/NAME]
 ```
 
+
 ### Suppression des images
 
 ```bash
 # Supprimer une image spécifique
 docker rmi [IMAGE_ID/NAME]
+
 
 # Supprimer plusieurs images
 docker rmi [IMAGE1_ID] [IMAGE2_ID]
