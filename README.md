@@ -13,7 +13,13 @@ Ce projet documente l'utilisation et l'exploration de l'image Docker "welcome-to
 
 ## Installation et Configuration
 
-Pour commencer, nous devons télécharger et exécuter l'image Docker.
+### Vérification de l'installation Docker
+Avant de commencer, vérifions que Docker est bien installé et configuré :
+
+![Vérification Docker](./images/Capture%20d'écran%201.png)
+
+### Configuration initiale
+Pour commencer, nous devons télécharger et exécuter l'image Docker :
 
 ![Configuration initiale](./images/Capture%20d'écran%202.png)
 
@@ -37,10 +43,11 @@ Résultat de l'exécution :
 
 Une fois le conteneur démarré, nous pouvons accéder à l'interface via notre navigateur sur `http://localhost:8088` :
 
+### Page d'accueil
 ![Interface d'accueil](./images/Capture%20d'écran%204.png)
 
-Navigation dans l'interface :
-![Exploration](./images/Capture%20d'écran%205.png)
+### Navigation et fonctionnalités
+![Exploration des fonctionnalités](./images/Capture%20d'écran%205.png)
 
 ## Commandes Docker de Base
 
