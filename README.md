@@ -106,6 +106,137 @@ La commande `docker run` sans paramètres supplémentaires est incomplète. Il e
 - Une image à exécuter
 - Les paramètres de configuration (ports, volumes, variables d'environnement, etc.) 
 
+## Développement avec Visual Studio Code et Docker
+
+### Configuration initiale
+1. Ouvrir le projet dans VS Code :
+```bash
+cd welcome-to-docker
+code .
+```
+
+2. Explorer les fichiers du projet :
+```bash
+# Afficher le contenu du Dockerfile
+cat Dockerfile
+
+# Afficher les fichiers ignorés par Docker
+cat .dockerignore
+```
+
+### Analyse du Dockerfile
+Le Dockerfile contient les instructions pour construire l'image :
+- `FROM` : Image de base utilisée
+- `WORKDIR` : Répertoire de travail dans le conteneur
+- `COPY` : Fichiers copiés dans l'image
+- `RUN` : Commandes exécutées lors de la construction
+- `EXPOSE` : Ports exposés
+- `CMD` : Commande par défaut au démarrage
+
+### Construction et déploiement
+1. Construire l'image :
+```bash
+docker build -t mon-app-welcome .
+```
+
+2. Lancer un conteneur :
+```bash
+docker run -d -p 8088:80 --name welcome-app mon-app-welcome
+```
+
+3. Vérifier l'état du conteneur :
+```bash
+# Liste des conteneurs en cours d'exécution
+docker ps
+
+# Logs du conteneur
+docker logs welcome-app
+```
+
+### Développement et mise à jour
+1. Modifier le code dans VS Code
+2. Reconstruire l'image :
+```bash
+docker build -t mon-app-welcome:v2 .
+```
+
+3. Arrêter l'ancien conteneur :
+```bash
+docker stop welcome-app
+docker rm welcome-app
+```
+
+4. Lancer le nouveau conteneur :
+```bash
+docker run -d -p 8088:80 --name welcome-app mon-app-welcome:v2
+```
+
+### Publication sur Docker Hub
+1. Se connecter à Docker Hub :
+```bash
+docker login
+```
+
+2. Tagger l'image :
+```bash
+docker tag mon-app-welcome:v2 [VOTRE_USERNAME]/welcome-app:latest
+```
+
+3. Pousser l'image :
+```bash
+docker push [VOTRE_USERNAME]/welcome-app:latest
+```
+
+### Collaboration avec l'équipe
+1. Récupérer l'image d'un collègue :
+```bash
+docker pull [USERNAME_COLLEGUE]/welcome-app:latest
+```
+
+2. Tester l'image :
+```bash
+docker run -d -p 8089:80 --name app-collegue [USERNAME_COLLEGUE]/welcome-app:latest
+```
+
+3. Modifier et republier :
+```bash
+# Après modifications
+docker build -t [VOTRE_USERNAME]/welcome-app-modified:latest .
+docker push [VOTRE_USERNAME]/welcome-app-modified:latest
+```
+
+Note : N'oubliez pas de créditer l'auteur original dans la documentation de votre image modifiée.
+
+## Installation et Exécution de Super Mario
+
+### Récupération de l'image
+Pour installer le jeu Super Mario en version conteneurisée, nous utilisons l'image Docker `johnjayaraj/supermario`. Voici les étapes à suivre :
+
+1. Télécharger l'image :
+```bash
+docker pull johnjayaraj/supermario
+```
+
+2. Lancer le conteneur :
+```bash
+docker run -d -p 8081:8080 johnjayaraj/supermario
+```
+Note : Nous utilisons le port 8081 sur notre machine locale qui redirige vers le port 8080 du conteneur.
+
+3. Accéder au jeu :
+- Ouvrir votre navigateur web
+- Aller à l'adresse : http://localhost:8081
+
+### Gestion du conteneur Super Mario
+Pour arrêter le jeu, vous pouvez utiliser :
+```bash
+# Identifier l'ID du conteneur
+docker ps
+
+# Arrêter le conteneur
+docker stop [CONTAINER_ID]
+```
+
 ## Nettoyage de l'environnement
 
 ### État initial

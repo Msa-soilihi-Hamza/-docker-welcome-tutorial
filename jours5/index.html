@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .game-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            background-color: white;
+            transition: background-color 0.2s;
+        }
+        .cell:hover {
+            background-color: #f8f9fa;
+        }
+        .status {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .reset-btn:hover {
+            background-color: #0056b3;
+        }
+        .scores-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .scores-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .score-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .score-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Tic Tac Toe</h1>
+        <div class="status" id="status">Au tour de X</div>
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button class="reset-btn" id="resetBtn">Nouvelle Partie</button>
+    </div>
+
+    <div class="scores-container">
+        <h2>Historique des parties</h2>
+        <ul class="scores-list" id="scoresList">
+            <li class="score-item">Chargement des scores...</li>
+        </ul>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        const cells = document.querySelectorAll('.cell');
+        const status = document.getElementById('status');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoresList = document.getElementById('scoresList');
+
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => handleCellClick(cell));
+        });
+
+        resetBtn.addEventListener('click', resetGame);
+
+        function handleCellClick(cell) {
+            const index = cell.getAttribute('data-index');
+            
+            if (gameBoard[index] !== '' || !gameActive) return;
+
+            gameBoard[index] = currentPlayer;
+            cell.textContent = currentPlayer;
+            
+            if (checkWin()) {
+                status.textContent = `Joueur ${currentPlayer} a gagné!`;
+                gameActive = false;
+                saveGame(currentPlayer);
+                return;
+            }
+
+            if (checkDraw()) {
+                status.textContent = "Match nul!";
+                gameActive = false;
+                saveGame('draw');
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            status.textContent = `Au tour de ${currentPlayer}`;
+        }
+
+        function checkWin() {
+            return winningCombinations.some(combination => {
+                return combination.every(index => {
+                    return gameBoard[index] === currentPlayer;
+                });
+            });
+        }
+
+        function checkDraw() {
+            return gameBoard.every(cell => cell !== '');
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            gameActive = true;
+            status.textContent = `Au tour de ${currentPlayer}`;
+            cells.forEach(cell => cell.textContent = '');
+            loadScores();
+        }
+
+        function saveGame(result) {
+            fetch('save.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    winner: result,
+                    date: new Date().toISOString()
+                })
+            })
+            .then(() => loadScores())
+            .catch(error => console.error('Error:', error));
+        }
+
+        function loadScores() {
+            fetch('data/results.json')
+                .then(response => response.json())
+                .then(scores => {
+                    scoresList.innerHTML = scores.reverse().slice(0, 10).map(score => `
+                        <li class="score-item">
+                            <span>${score.winner === 'draw' ? 'Match nul' : `Victoire de ${score.winner}`}</span>
+                            <span>${new Date(score.date).toLocaleString()}</span>
+                        </li>
+                    `).join('') || '<li class="score-item">Aucune partie jouée</li>';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    scoresList.innerHTML = '<li class="score-item">Erreur lors du chargement des scores</li>';
+                });
+        }
+
+        // Charger les scores au démarrage
+        loadScores();
+    </script>
+</body>
+</html>
